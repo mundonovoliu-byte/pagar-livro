@@ -1,73 +1,213 @@
-document.getElementById('form').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  
-  const nome = document.getElementById('nome').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const botao = document.getElementById('btnPagar');
-  
-  // Validação
-  if (!nome || nome.length < 3) {
-    alert('Digite seu nome completo!');
-    return;
-  }
-  
-  if (!email.includes('@') || !email.includes('.')) {
-    alert('Digite um e-mail válido!');
-    return;
-  }
-  
-  // Desabilita botão
-  botao.disabled = true;
-  botao.innerHTML = '⏳ Gerando PIX...';
-  
-  // Pega motorista da URL
-  const params = new URLSearchParams(window.location.search);
-  const motorista = params.get('motorista') || 'LARA';
-  
-  try {
-    // Chama N8N
-    const webhookUrl = 'https://prazermauricio.app.n8n.cloud/webhook/Pagar';
-    const response = await fetch(`${webhookUrl}?nome=${encodeURIComponent(nome)}&email=${encodeURIComponent(email)}&motorista=${encodeURIComponent(motorista)}`);
-    
-    const data = await response.json();
-    
-    if (data.sucesso && data.pixCopiaECola) {
-      const pixCode = data.pixCopiaECola;
-      
-      // Copia o PIX automaticamente
-      try {
-        await navigator.clipboard.writeText(pixCode);
-      } catch (err) {
-        console.log('Erro ao copiar:', err);
-      }
-      
-      // Detecta se é mobile
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      
-      if (isMobile) {
-        // Tenta abrir o app do banco (deep link universal)
-        window.location.href = `https://www.asaas.com/i/${data.cobrancaId}`;
-        
-        // Mostra instruções após 2 segundos
-        setTimeout(() => {
-          alert('✅ PIX copiado!\n\n📱 Clique em "Abrir Pix" na página que abriu.\n\n💡 Se não abrir automaticamente, cole o código PIX no seu banco.\n\n📧 Após pagar, você receberá o livro por email em até 5 minutos.');
-        }, 2000);
-        
-      } else {
-        // Desktop
-        window.open(data.invoiceUrl, '_blank');
-        alert('✅ PIX copiado!\n\n📱 Acesse a página que abriu, clique em "Abrir Pix" ou cole o código no seu banco.\n\n📧 Após pagar, você receberá o livro por email.');
-      }
-      
-    } else {
-      throw new Error('Erro ao gerar PIX');
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>O Preço da Desconfiança - UbiStore</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
     
-  } catch (error) {
-    console.error('Erro:', error);
-    alert('❌ Erro ao gerar pagamento. Tente novamente.');
-  } finally {
-    botao.disabled = false;
-    botao.innerHTML = '💳 Gerar PIX Agora';
-  }
-});
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 400px;
+      width: 100%;
+    }
+    
+    h1 {
+      color: #333;
+      font-size: 24px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    
+    .preco {
+      text-align: center;
+      font-size: 32px;
+      color: #667eea;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      color: #555;
+      font-weight: 500;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    
+    input {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: border 0.3s;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    
+    button {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    
+    button:hover {
+      transform: scale(1.02);
+    }
+    
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: scale(1);
+    }
+    
+    .info {
+      text-align: center;
+      margin-top: 20px;
+      color: #888;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📖 O Preço da Desconfiança</h1>
+    <p class="subtitle">Audiolivro + Livro Completo</p>
+    <div class="preco">R$ 14,90</div>
+    
+    <form id="form">
+      <div class="form-group">
+        <label for="nome">Nome Completo</label>
+        <input type="text" id="nome" placeholder="Ex: João Silva" required minlength="3">
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Seu Melhor E-mail</label>
+        <input type="email" id="email" placeholder="seu@email.com" required>
+      </div>
+      
+      <button type="submit" id="btnPagar">💳 Gerar PIX Agora</button>
+    </form>
+    
+    <div class="info">
+      🔒 Pagamento 100% seguro via Asaas<br>
+      Seus dados estão protegidos
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const nome = document.getElementById('nome').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const botao = document.getElementById('btnPagar');
+      
+      // Validação
+      if (!nome || nome.length < 3) {
+        alert('Digite seu nome completo!');
+        return;
+      }
+      
+      if (!email.includes('@') || !email.includes('.')) {
+        alert('Digite um e-mail válido!');
+        return;
+      }
+      
+      // Desabilita botão
+      botao.disabled = true;
+      botao.innerHTML = '⏳ Gerando PIX...';
+      
+      // Pega motorista da URL
+      const params = new URLSearchParams(window.location.search);
+      const motorista = params.get('motorista') || 'LARA';
+      
+      try {
+        // Chama N8N
+        const webhookUrl = 'https://prazermauricio.app.n8n.cloud/webhook/Pagar';
+        const response = await fetch(`${webhookUrl}?nome=${encodeURIComponent(nome)}&email=${encodeURIComponent(email)}&motorista=${encodeURIComponent(motorista)}`);
+        
+        const data = await response.json();
+        
+        if (data.sucesso && data.pixCopiaECola) {
+          const pixCode = data.pixCopiaECola;
+          
+          // Copia o PIX automaticamente
+          try {
+            await navigator.clipboard.writeText(pixCode);
+          } catch (err) {
+            console.log('Erro ao copiar:', err);
+          }
+          
+          // Detecta se é mobile
+          const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+          
+          if (isMobile) {
+            // Redireciona para página do Asaas (tem botão "Abrir Pix")
+            window.location.href = data.invoiceUrl;
+            
+            // Mostra instruções após 2 segundos
+            setTimeout(() => {
+              alert('✅ PIX copiado!\n\n📱 Clique em "Abrir Pix" na página que abriu.\n\n💡 Se não abrir automaticamente, cole o código PIX no seu banco.\n\n📧 Após pagar, você receberá o livro por email em até 5 minutos.');
+            }, 2000);
+            
+          } else {
+            // Desktop
+            window.open(data.invoiceUrl, '_blank');
+            alert('✅ PIX copiado!\n\n📱 Acesse a página que abriu, clique em "Abrir Pix" ou cole o código no seu banco.\n\n📧 Após pagar, você receberá o livro por email.');
+          }
+          
+        } else {
+          throw new Error('Erro ao gerar PIX');
+        }
+        
+      } catch (error) {
+        console.error('Erro:', error);
+        alert('❌ Erro ao gerar pagamento. Tente novamente.');
+        botao.disabled = false;
+        botao.innerHTML = '💳 Gerar PIX Agora';
+      }
+    });
+  </script>
+</body>
+</html>
