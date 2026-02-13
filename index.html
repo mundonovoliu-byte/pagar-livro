@@ -84,9 +84,6 @@
             color: #667eea;
             font-size: 16px;
             margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .benefits ul {
@@ -145,17 +142,12 @@
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s;
             margin-top: 10px;
         }
 
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn:active {
-            transform: translateY(0);
         }
 
         .btn:disabled {
@@ -185,25 +177,16 @@
             100% { transform: rotate(360deg); }
         }
 
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
+        .fallback {
             display: none;
-        }
-
-        .success-box {
             background: #d4edda;
-            border: 2px solid #28a745;
             padding: 20px;
             border-radius: 10px;
             margin-top: 20px;
-            display: none;
+            text-align: center;
         }
 
-        .success-box h3 {
+        .fallback h3 {
             color: #155724;
             margin-bottom: 15px;
         }
@@ -213,22 +196,13 @@
             margin-top: 10px;
         }
 
-        .btn-tertiary {
-            background: #17a2b8;
-            margin-top: 10px;
-        }
-
-        .guarantee {
+        .info {
             background: #fff3cd;
             padding: 15px;
             border-radius: 10px;
             margin-top: 20px;
             text-align: center;
             font-size: 14px;
-        }
-
-        .guarantee strong {
-            color: #856404;
         }
 
         .alternative {
@@ -259,22 +233,22 @@
         <div class="benefits">
             <h3>📦 O que você vai receber:</h3>
             <ul>
-                <li>📖 <strong>Livro completo em PDF</strong> - Leia em qualquer dispositivo</li>
-                <li>🎧 <strong>Audiobook completo em MP3</strong> - Ouça onde e quando quiser</li>
-                <li>☁️ <strong>Armazenado no Google Drive</strong> - Acesso vitalício garantido</li>
-                <li>📱 <strong>Download ilimitado</strong> - Baixe quantas vezes precisar</li>
+                <li>📖 Livro completo em PDF</li>
+                <li>🎧 Audiobook completo em MP3</li>
+                <li>☁️ Armazenado no Google Drive</li>
+                <li>📱 Download ilimitado</li>
             </ul>
         </div>
 
         <form id="paymentForm">
             <div class="form-group">
                 <label for="name">Nome Completo</label>
-                <input type="text" id="name" name="name" required placeholder="Digite seu nome completo">
+                <input type="text" id="name" required placeholder="Digite seu nome completo">
             </div>
 
             <div class="form-group">
                 <label for="email">E-mail</label>
-                <input type="email" id="email" name="email" required placeholder="seu@email.com">
+                <input type="email" id="email" required placeholder="seu@email.com">
             </div>
 
             <button type="submit" class="btn" id="submitBtn">
@@ -284,29 +258,25 @@
 
         <div class="loading" id="loading">
             <div class="spinner"></div>
-            <p style="margin-top: 10px; color: #666;">Gerando seu Pix...</p>
+            <p style="margin-top: 10px; color: #666;">Gerando PIX e abrindo seu banco...</p>
         </div>
 
-        <div class="error" id="error"></div>
-
-        <div class="success-box" id="successBox">
-            <h3>✅ PIX Copiado!</h3>
+        <div class="fallback" id="fallback">
+            <h3>✅ PIX Gerado!</h3>
             <p style="margin-bottom: 15px; color: #155724;">
-                <strong>Agora escolha como pagar:</strong>
+                O app do seu banco não abriu?<br>
+                <strong>Cole o código PIX manualmente:</strong>
             </p>
-            <button class="btn btn-secondary" id="btnColarBanco">
-                📱 Abrir Meu Banco e Colar
-            </button>
-            <button class="btn btn-tertiary" id="btnQRCode">
-                📷 Ver QR Code
+            <button class="btn btn-secondary" id="btnFallback">
+                📱 Abrir App do Banco
             </button>
             <p style="margin-top: 15px; font-size: 13px; color: #666;">
-                💡 Cole o código PIX no seu app do banco (qualquer banco)<br>
-                📧 Após pagar, você receberá o livro por email em 5 minutos
+                💡 Código PIX já está copiado!<br>
+                Abra seu banco → PIX → Copia e Cola → Confirmar
             </p>
         </div>
 
-        <div class="guarantee">
+        <div class="info">
             <strong>🔒 Pagamento 100% seguro via Asaas</strong><br>
             Seus dados estão protegidos
         </div>
@@ -320,7 +290,6 @@
 
     <script>
         const WEBHOOK_URL = 'https://prazermauricio.app.n8n.cloud/webhook/Pagar';
-        let pixCodeGlobal = '';
         let invoiceUrlGlobal = '';
 
         document.getElementById('paymentForm').addEventListener('submit', async function(e) {
@@ -329,92 +298,85 @@
             const name = document.getElementById('name').value.trim();
             const email = document.getElementById('email').value.trim();
             
-            // Validações
-            if (!name || !email) {
-                showError('Por favor, preencha todos os campos');
+            if (!name || !email || !email.includes('@')) {
+                alert('Por favor, preencha todos os campos corretamente');
                 return;
             }
             
-            if (!email.includes('@')) {
-                showError('Por favor, digite um e-mail válido');
-                return;
-            }
-            
-            // Mostrar loading
             document.getElementById('submitBtn').disabled = true;
+            document.getElementById('submitBtn').textContent = '⏳ Gerando PIX...';
             document.getElementById('loading').style.display = 'block';
-            document.getElementById('error').style.display = 'none';
-            document.getElementById('successBox').style.display = 'none';
             
             try {
-                // Pegar motorista da URL
                 const urlParams = new URLSearchParams(window.location.search);
                 const motorista = urlParams.get('motorista') || 'LARA';
                 
-                // Chamar N8N
                 const url = `${WEBHOOK_URL}?nome=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&motorista=${motorista}`;
-                
-                console.log('Chamando webhook:', url);
                 
                 const response = await fetch(url);
                 const data = await response.json();
                 
-                console.log('Resposta:', data);
-                
                 if (data.sucesso && data.pixCopiaECola) {
-                    pixCodeGlobal = data.pixCopiaECola;
+                    const pixCode = data.pixCopiaECola;
                     invoiceUrlGlobal = data.invoiceUrl;
                     
-                    // Copiar PIX automaticamente
+                    // Copiar PIX
                     try {
-                        await navigator.clipboard.writeText(pixCodeGlobal);
-                        console.log('✅ PIX copiado!');
+                        await navigator.clipboard.writeText(pixCode);
+                        console.log('✅ PIX copiado');
                     } catch (err) {
-                        console.log('Erro ao copiar:', err);
+                        console.log('Erro copiar:', err);
                     }
                     
-                    // Mostrar caixa de sucesso com botões
-                    document.getElementById('loading').style.display = 'none';
-                    document.getElementById('successBox').style.display = 'block';
+                    // Tentar abrir app do banco DIRETO
+                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                    const isAndroid = /Android/i.test(navigator.userAgent);
+                    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+                    
+                    if (isMobile) {
+                        let appOpened = false;
+                        
+                        if (isAndroid) {
+                            // Android - Intent universal para PIX
+                            const intentUrl = `intent://pix?code=${encodeURIComponent(pixCode)}#Intent;scheme=pix;package=com.android;end`;
+                            window.location.href = intentUrl;
+                            appOpened = true;
+                        } else if (isIOS) {
+                            // iOS - Tenta deep link genérico
+                            window.location.href = `pix://pay?code=${encodeURIComponent(pixCode)}`;
+                            appOpened = true;
+                        }
+                        
+                        // Fallback após 3 segundos
+                        setTimeout(() => {
+                            document.getElementById('loading').style.display = 'none';
+                            document.getElementById('fallback').style.display = 'block';
+                        }, 3000);
+                        
+                    } else {
+                        // Desktop - abre página Asaas
+                        window.open(invoiceUrlGlobal, '_blank');
+                        document.getElementById('loading').style.display = 'none';
+                        alert('✅ PIX copiado!\n\nAcesse a página que abriu para pagar.');
+                    }
                     
                 } else {
-                    throw new Error('Resposta inválida do servidor');
+                    throw new Error('Erro ao gerar PIX');
                 }
                 
             } catch (error) {
                 console.error('Erro:', error);
-                showError('Erro ao processar pagamento. Tente novamente.');
+                alert('❌ Erro ao gerar pagamento. Tente novamente.');
                 document.getElementById('submitBtn').disabled = false;
+                document.getElementById('submitBtn').textContent = '💳 Gerar Pix Agora';
                 document.getElementById('loading').style.display = 'none';
             }
         });
         
-        // Botão: Abrir Banco
-        document.getElementById('btnColarBanco').addEventListener('click', function() {
-            // Tentar compartilhar (mostra apps disponíveis, incluindo bancos)
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Código PIX',
-                    text: pixCodeGlobal
-                }).catch(err => {
-                    // Se falhar, mostra alert
-                    alert('✅ PIX já está copiado!\n\nAbra o app do seu banco:\n\n1. Entre no app do seu banco\n2. Vá em PIX\n3. Escolha "Pix Copia e Cola"\n4. Cole o código\n5. Confirme o pagamento');
-                });
-            } else {
-                alert('✅ PIX já está copiado!\n\nAbra o app do seu banco:\n\n1. Entre no app do seu banco\n2. Vá em PIX\n3. Escolha "Pix Copia e Cola"\n4. Cole o código\n5. Confirme o pagamento');
-            }
-        });
-        
-        // Botão: Ver QR Code
-        document.getElementById('btnQRCode').addEventListener('click', function() {
+        // Botão fallback
+        document.getElementById('btnFallback').addEventListener('click', function() {
             window.location.href = invoiceUrlGlobal;
         });
-        
-        function showError(message) {
-            const errorDiv = document.getElementById('error');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-        }
     </script>
 </body>
 </html>
