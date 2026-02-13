@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head><title>Pix Livro</title></head>
+<body style="margin:0;padding:40px;font-family:sans-serif;background:#f0f8ff;text-align:center;">
+<h1 style="font-size:32px;color:#333;">📖 O Preço da Desconfiança</h1>
+<p style="font-size:20px;color:#666;">R<span style="font-size:28px;color:#4CAF50;">$14,99</span> Pix Split</p>
+<hr style="width:300px;">
+<input id="nome" placeholder="Nome completo" style="display:block;margin:20px auto;width:350px;padding:15px;font-size:18px;border:2px solid #ddd;border-radius:10px;">
+<input id="email" type="email" placeholder="Email (recibo)" style="display:block;margin:20px auto;width:350px;padding:15px;font-size:18px;border:2px solid #ddd;border-radius:10px;">
+<button onclick="pix()" style="display:block;margin:30px auto;padding:20px 40px;font-size:22px;background:#4CAF50;color:white;border:none;border-radius:12px;cursor:pointer;">💳 Gerar Pix Agora</button>
+<script>
+function pix(){
+  let n=document.getElementById('nome').value;
+  let e=document.getElementById('email').value;
+  if(!n||!e.includes('@')) return alert('Nome e email válidos!');
+  window.location='https://prazermauricio.app.n8n.cloud/webhook/Pagar?nome='+encodeURIComponent(n)+'&email='+encodeURIComponent(e);
+}
+</script>
+</body>
+</html>
