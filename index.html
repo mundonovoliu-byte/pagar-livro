@@ -3,9 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📖 O Preço da Desconfiança</title>
+    <title>📖 O Preço da Desconfiança - Livro Completo + Audiobook</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -15,6 +20,7 @@
             align-items: center;
             padding: 20px;
         }
+
         .container {
             background: white;
             border-radius: 20px;
@@ -22,40 +28,113 @@
             max-width: 500px;
             width: 100%;
             padding: 40px;
+            animation: slideUp 0.5s ease;
         }
-        h1 {
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
             text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .book-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
             color: #333;
             font-size: 28px;
             margin-bottom: 10px;
         }
+
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
         .price {
-            text-align: center;
             font-size: 32px;
-            color: #667eea;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             font-weight: bold;
             margin: 20px 0;
         }
+
+        .benefits {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .benefits h3 {
+            color: #667eea;
+            font-size: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .benefits ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .benefits li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            font-size: 14px;
+        }
+
+        .benefits li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
         .form-group {
             margin-bottom: 20px;
         }
+
         label {
             display: block;
             margin-bottom: 8px;
             color: #333;
             font-weight: 500;
         }
+
         input {
             width: 100%;
             padding: 12px 15px;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
             font-size: 16px;
+            transition: all 0.3s;
         }
+
         input:focus {
             outline: none;
             border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
+
         .btn {
             width: 100%;
             padding: 15px;
@@ -66,128 +145,275 @@
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
         }
+
         .btn:hover {
-            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
-        #status {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 10px;
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
             text-align: center;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
             display: none;
         }
-        .loading { background: #d1ecf1; color: #0c5460; }
-        .error { background: #f8d7da; color: #721c24; }
-        .success { background: #d4edda; color: #155724; }
+
+        .success-box {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .success-box h3 {
+            color: #155724;
+            margin-bottom: 15px;
+        }
+
+        .btn-secondary {
+            background: #28a745;
+            margin-top: 10px;
+        }
+
+        .btn-tertiary {
+            background: #17a2b8;
+            margin-top: 10px;
+        }
+
+        .guarantee {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .guarantee strong {
+            color: #856404;
+        }
+
+        .alternative {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .alternative a {
+            color: #4facfe;
+            font-weight: bold;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📖 O Preço da Desconfiança</h1>
-        <p style="text-align: center; color: #666; margin-bottom: 10px;">Audiolivro + Livro Completo</p>
-        <div class="price">R$ 14,90</div>
+        <div class="header">
+            <div class="book-icon">📖</div>
+            <h1>O Preço da Desconfiança</h1>
+            <p class="subtitle">Audiolivro + Livro Completo</p>
+            <div class="price">R$ 14,90</div>
+        </div>
 
-        <form id="form" onsubmit="gerarPix(event)">
+        <div class="benefits">
+            <h3>📦 O que você vai receber:</h3>
+            <ul>
+                <li>📖 <strong>Livro completo em PDF</strong> - Leia em qualquer dispositivo</li>
+                <li>🎧 <strong>Audiobook completo em MP3</strong> - Ouça onde e quando quiser</li>
+                <li>☁️ <strong>Armazenado no Google Drive</strong> - Acesso vitalício garantido</li>
+                <li>📱 <strong>Download ilimitado</strong> - Baixe quantas vezes precisar</li>
+            </ul>
+        </div>
+
+        <form id="paymentForm">
             <div class="form-group">
-                <label for="nome">Nome Completo</label>
-                <input type="text" id="nome" required minlength="3">
+                <label for="name">Nome Completo</label>
+                <input type="text" id="name" name="name" required placeholder="Digite seu nome completo">
             </div>
 
             <div class="form-group">
                 <label for="email">E-mail</label>
-                <input type="email" id="email" required>
+                <input type="email" id="email" name="email" required placeholder="seu@email.com">
             </div>
 
-            <button type="submit" class="btn" id="btn">💳 Gerar Pix Agora</button>
+            <button type="submit" class="btn" id="submitBtn">
+                💳 Gerar Pix Agora
+            </button>
         </form>
 
-        <div id="status"></div>
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 10px; color: #666;">Gerando seu Pix...</p>
+        </div>
 
-        <p style="text-align: center; margin-top: 20px; color: #888; font-size: 14px;">
-            🔒 Pagamento 100% seguro via Asaas
-        </p>
+        <div class="error" id="error"></div>
+
+        <div class="success-box" id="successBox">
+            <h3>✅ PIX Copiado!</h3>
+            <p style="margin-bottom: 15px; color: #155724;">
+                <strong>Agora escolha como pagar:</strong>
+            </p>
+            <button class="btn btn-secondary" id="btnColarBanco">
+                📱 Abrir Meu Banco e Colar
+            </button>
+            <button class="btn btn-tertiary" id="btnQRCode">
+                📷 Ver QR Code
+            </button>
+            <p style="margin-top: 15px; font-size: 13px; color: #666;">
+                💡 Cole o código PIX no seu app do banco (qualquer banco)<br>
+                📧 Após pagar, você receberá o livro por email em 5 minutos
+            </p>
+        </div>
+
+        <div class="guarantee">
+            <strong>🔒 Pagamento 100% seguro via Asaas</strong><br>
+            Seus dados estão protegidos
+        </div>
+
+        <div class="alternative">
+            <strong>💡 Orçamento menor?</strong><br>
+            Doe a partir de R$ 5,00 e receba o livro resumido<br>
+            <a href="doar-livro.html">Clique aqui para doar</a>
+        </div>
     </div>
 
     <script>
-        function gerarPix(event) {
-            event.preventDefault();
+        const WEBHOOK_URL = 'https://prazermauricio.app.n8n.cloud/webhook/Pagar';
+        let pixCodeGlobal = '';
+        let invoiceUrlGlobal = '';
+
+        document.getElementById('paymentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
             
-            const nome = document.getElementById('nome').value;
-            const email = document.getElementById('email').value;
-            const btn = document.getElementById('btn');
-            const status = document.getElementById('status');
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
             
-            // Validação
-            if (!nome || !email) {
-                alert('Preencha todos os campos!');
-                return false;
+            // Validações
+            if (!name || !email) {
+                showError('Por favor, preencha todos os campos');
+                return;
+            }
+            
+            if (!email.includes('@')) {
+                showError('Por favor, digite um e-mail válido');
+                return;
             }
             
             // Mostrar loading
-            btn.disabled = true;
-            btn.textContent = '⏳ Gerando PIX...';
-            status.className = 'loading';
-            status.textContent = 'Aguarde...';
-            status.style.display = 'block';
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('successBox').style.display = 'none';
             
-            // Pegar motorista da URL
-            const params = new URLSearchParams(window.location.search);
-            const motorista = params.get('motorista') || 'LARA';
-            
-            // Chamar webhook
-            const webhookUrl = 'https://prazermauricio.app.n8n.cloud/webhook/Pagar';
-            const url = webhookUrl + '?nome=' + encodeURIComponent(nome) + '&email=' + encodeURIComponent(email) + '&motorista=' + motorista;
-            
-            console.log('Chamando:', url);
-            
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Resposta:', data);
+            try {
+                // Pegar motorista da URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const motorista = urlParams.get('motorista') || 'LARA';
+                
+                // Chamar N8N
+                const url = `${WEBHOOK_URL}?nome=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&motorista=${motorista}`;
+                
+                console.log('Chamando webhook:', url);
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                console.log('Resposta:', data);
+                
+                if (data.sucesso && data.pixCopiaECola) {
+                    pixCodeGlobal = data.pixCopiaECola;
+                    invoiceUrlGlobal = data.invoiceUrl;
                     
-                    if (data.sucesso && data.pixCopiaECola) {
-                        // Copiar PIX
-                        const pixCode = data.pixCopiaECola;
-                        
-                        if (navigator.clipboard) {
-                            navigator.clipboard.writeText(pixCode).then(() => {
-                                console.log('PIX copiado!');
-                            });
-                        }
-                        
-                        // Detectar mobile
-                        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-                        
-                        status.className = 'success';
-                        status.textContent = '✅ PIX gerado! Redirecionando...';
-                        
-                        // Redirecionar
-                        setTimeout(() => {
-                            if (isMobile) {
-                                window.location.href = 'https://nubank.com.br/pagar/' + encodeURIComponent(pixCode);
-                                setTimeout(() => {
-                                    window.location.href = data.invoiceUrl;
-                                }, 2000);
-                            } else {
-                                window.open(data.invoiceUrl, '_blank');
-                                alert('✅ PIX copiado! Acesse a página que abriu para pagar.');
-                            }
-                        }, 1000);
-                        
-                    } else {
-                        throw new Error('Resposta inválida');
+                    // Copiar PIX automaticamente
+                    try {
+                        await navigator.clipboard.writeText(pixCodeGlobal);
+                        console.log('✅ PIX copiado!');
+                    } catch (err) {
+                        console.log('Erro ao copiar:', err);
                     }
-                })
-                .catch(error => {
-                    console.error('Erro:', error);
-                    status.className = 'error';
-                    status.textContent = '❌ Erro ao gerar PIX. Tente novamente.';
-                    btn.disabled = false;
-                    btn.textContent = '💳 Gerar Pix Agora';
+                    
+                    // Mostrar caixa de sucesso com botões
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('successBox').style.display = 'block';
+                    
+                } else {
+                    throw new Error('Resposta inválida do servidor');
+                }
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                showError('Erro ao processar pagamento. Tente novamente.');
+                document.getElementById('submitBtn').disabled = false;
+                document.getElementById('loading').style.display = 'none';
+            }
+        });
+        
+        // Botão: Abrir Banco
+        document.getElementById('btnColarBanco').addEventListener('click', function() {
+            // Tentar compartilhar (mostra apps disponíveis, incluindo bancos)
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Código PIX',
+                    text: pixCodeGlobal
+                }).catch(err => {
+                    // Se falhar, mostra alert
+                    alert('✅ PIX já está copiado!\n\nAbra o app do seu banco:\n\n1. Entre no app do seu banco\n2. Vá em PIX\n3. Escolha "Pix Copia e Cola"\n4. Cole o código\n5. Confirme o pagamento');
                 });
-            
-            return false;
+            } else {
+                alert('✅ PIX já está copiado!\n\nAbra o app do seu banco:\n\n1. Entre no app do seu banco\n2. Vá em PIX\n3. Escolha "Pix Copia e Cola"\n4. Cole o código\n5. Confirme o pagamento');
+            }
+        });
+        
+        // Botão: Ver QR Code
+        document.getElementById('btnQRCode').addEventListener('click', function() {
+            window.location.href = invoiceUrlGlobal;
+        });
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
         }
     </script>
 </body>
