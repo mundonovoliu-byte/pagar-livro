@@ -283,8 +283,8 @@
         document.getElementById('paymentForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
             
             // Validações
             if (!name || !email) {
@@ -307,24 +307,49 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const motorista = urlParams.get('motorista') || 'LARA';
                 
-                // Enviar para o webhook do N8N
-                const url = `${WEBHOOK_URL}?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&motorista=${motorista}`;
+                // Chamar N8N com FETCH (não redirecionar!)
+                const url = `${WEBHOOK_URL}?nome=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&motorista=${motorista}`;
                 
-                window.location.href = url;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.sucesso && data.pixCopiaECola) {
+                    const pixCode = data.pixCopiaECola;
+                    
+                    // Copiar PIX automaticamente
+                    try {
+                        await navigator.clipboard.writeText(pixCode);
+                        console.log('✅ PIX copiado!');
+                    } catch (err) {
+                        console.log('Erro ao copiar:', err);
+                    }
+                    
+                    // Detectar mobile
+                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                    
+                    if (isMobile) {
+                        // Tentar abrir app do banco
+                        window.location.href = `https://nubank.com.br/pagar/${encodeURIComponent(pixCode)}`;
+                        
+                        // Fallback após 2 segundos
+                        setTimeout(() => {
+                            if (confirm('✅ PIX copiado!\n\nO app do banco não abriu?\n\nClique OK para ver o QR Code ou CANCELAR para colar manualmente.')) {
+                                window.location.href = data.invoiceUrl;
+                            }
+                        }, 2000);
+                        
+                    } else {
+                        // Desktop - abre página Asaas
+                        window.open(data.invoiceUrl, '_blank');
+                        alert('✅ PIX copiado!\n\n📱 Acesse a página que abriu para pagar.\n\n📧 Após pagar, você receberá o livro por email em até 5 minutos.');
+                    }
+                    
+                } else {
+                    throw new Error('Erro ao gerar PIX');
+                }
                 
             } catch (error) {
                 console.error('Erro:', error);
                 showError('Erro ao processar pagamento. Tente novamente.');
-                document.getElementById('submitBtn').disabled = false;
-                document.getElementById('loading').style.display = 'none';
-            }
-        });
-        
-        function showError(message) {
-            const errorDiv = document.getElementById('error');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-        }
-    </script>
-</body>
-</html>
+            } finally {
+                document.getElementById('submitBtn').disabl
