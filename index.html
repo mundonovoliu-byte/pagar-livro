@@ -559,87 +559,83 @@
         </div>
     </div>
 
-    <script>
-        // Máscara de CPF
-        document.getElementById('cpf').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length <= 11) {
-                value = value.replace(/(\d{3})(\d)/, '$1.$2');
-                value = value.replace(/(\d{3})(\d)/, '$1.$2');
-                value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+   <script>
+    // Máscara de CPF
+    document.getElementById('cpf').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length <= 11) {
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        }
+        e.target.value = value;
+    });
+
+    // Submit do formulário
+    document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const btn = document.querySelector('.btn-submit');
+        btn.disabled = true;
+        btn.innerHTML = '<div class="spinner"></div> Processando...';
+
+        // PEGA MOTORISTA DA URL (LARA)
+        const urlParams = new URLSearchParams(window.location.search);
+        const nome = urlParams.get('motorista') || document.getElementById('name').value || 'Cliente';
+        const email = document.getElementById('email').value;
+        const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
+
+        try {
+            const webhookUrl = `https://screamingly-uninclining-monnie.ngrok-free.dev/webhook/Pagar?name=${encodeURIComponent(nome)}&email=${encodeURIComponent(email)}&cpf=${encodeURIComponent(cpf)}`;
+
+            const response = await fetch(webhookUrl);
+            
+            if (!response.ok) {
+                throw new Error('Erro ao processar pagamento');
             }
-            e.target.value = value;
-        });
 
-        // Submit do formulário
-        document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+            const data = await response.json();
 
-            const btn = document.querySelector('.btn-submit');
-            btn.disabled = true;
-            btn.innerHTML = '<div class="spinner"></div> Processando...';
-
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
-
-            try {
-                // URL do webhook N8N (TROQUE PELA SUA)
-               const webhookUrl = `https://screamingly-uninclining-monnie.ngrok-free.dev/webhook/Pagar?
-               name=${encodeURIComponent(nome)}&email=${encodeURIComponent(email)}&cpf=${encodeURIComponent(cpf)}`;
-
-    
-                const response = await fetch(`${webhookUrl}?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&cpf=${cpf}`);
+            if (data.success) {
+                // Exibir QR Code
+                document.getElementById('qrCodeImage').src = `data:image/png;base64,${data.pixQrCodeBase64}`;
+                document.getElementById('pixCode').textContent = data.pixCopiaECola;
                 
-                if (!response.ok) {
-                    throw new Error('Erro ao processar pagamento');
-                }
+                // Salvar código para copiar
+                window.pixCode = data.pixCopiaECola;
 
-                const data = await response.json();
-
-                if (data.success) {
-                    // Exibir QR Code
-                    document.getElementById('qrCodeImage').src = `data:image/png;base64,${data.pixQrCodeBase64}`;
-                    document.getElementById('pixCode').textContent = data.pixCopiaECola;
-                    
-                    // Salvar código para copiar
-                    window.pixCode = data.pixCopiaECola;
-
-                    // Abrir modal
-                    document.getElementById('pixModal').classList.add('active');
-                } else {
-                    throw new Error('Erro ao gerar PIX');
-                }
-
-            } catch (error) {
-                console.error('Erro:', error);
-                alert('❌ Erro ao processar pagamento. Tente novamente ou entre em contato conosco.');
-                btn.disabled = false;
-                btn.innerHTML = '🚀 Garantir Acesso Agora';
+                // Abrir modal
+                document.getElementById('pixModal').classList.add('active');
+            } else {
+                throw new Error('Erro ao gerar PIX');
             }
-        });
 
-        // Copiar código PIX
-        document.getElementById('btnCopy').addEventListener('click', function() {
-            const btn = this;
-            navigator.clipboard.writeText(window.pixCode).then(() => {
-                btn.textContent = '✅ Código Copiado!';
-                btn.classList.add('copied');
-                
-                setTimeout(() => {
-                    btn.textContent = '📋 Copiar Código PIX';
-                    btn.classList.remove('copied');
-                }, 3000);
-            });
-        });
+        } catch (error) {
+            console.error('Erro:', error);
+            alert('❌ Erro ao processar pagamento. Tente novamente ou entre em contato conosco.\n\n' + error.message);
+            btn.disabled = false;
+            btn.innerHTML = '🚀 Garantir Acesso Agora';
+        }
+    });
 
-        // Fechar modal ao clicar fora
-        document.getElementById('pixModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.classList.remove('active');
-            }
+    // Copiar código PIX
+    document.getElementById('btnCopy').addEventListener('click', function() {
+        const btn = this;
+        navigator.clipboard.writeText(window.pixCode).then(() => {
+            btn.textContent = '✅ Código Copiado!';
+            btn.classList.add('copied');
+            
+            setTimeout(() => {
+                btn.textContent = '📋 Copiar Código PIX';
+                btn.classList.remove('copied');
+            }, 3000);
         });
-    </script>
+    });
 
-</body>
-</html>
+    // Fechar modal ao clicar fora
+    document.getElementById('pixModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.remove('active');
+        }
+    });
+</script>
