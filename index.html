@@ -585,9 +585,10 @@
 
             try {
                 // URL do webhook N8N (TROQUE PELA SUA)
-                const webhookUrl = 'https://screamingly-uninclining-monnie.ngrok-free.dev/webhook/Pagar';
+               const webhookUrl = `https://screamingly-uninclining-monnie.ngrok-free.dev/webhook/Pagar?
+               name=${encodeURIComponent(nome)}&email=${encodeURIComponent(email)}&cpf=${encodeURIComponent(cpf)}`;
 
-                
+    
                 const response = await fetch(`${webhookUrl}?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&cpf=${cpf}`);
                 
                 if (!response.ok) {
