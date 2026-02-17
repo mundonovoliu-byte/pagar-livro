@@ -502,7 +502,6 @@
     </div>
 
 <script>
-// Máscara de CPF
 document.getElementById('cpf').addEventListener('input', function(e) {
     let value = e.target.value.replace(/\D/g, '');
     if (value.length <= 11) {
@@ -513,7 +512,6 @@ document.getElementById('cpf').addEventListener('input', function(e) {
     e.target.value = value;
 });
 
-// Submit do formulário
 document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
@@ -528,18 +526,17 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
     const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
 
     try {
-        const webhookUrl = `https://screamingly-uninclining-monnie.ngrok-free.dev/webhook/Pagar?name=${encodeURIComponent(nome)}&email=${encodeURIComponent(email)}&cpf=${encodeURIComponent(cpf)}`;
+        const webhookUrl = 'https://screamingly-uninclining-monnie.ngrok-free.dev/webhook/Pagar?name=' + encodeURIComponent(nome) + '&email=' + encodeURIComponent(email) + '&cpf=' + encodeURIComponent(cpf);
         
         console.log('🚀 Fazendo requisição para:', webhookUrl);
 
         const response = await fetch(webhookUrl, {
-        method: 'GET',
-        headers: {
-            'ngrok-skip-browser-warning': 'true',
-            'User-Agent': 'Mozilla/5.0'
-        }
-
-        const response = await fetch(webhookUrl);
+            method: 'GET',
+            headers: {
+                'ngrok-skip-browser-warning': 'true',
+                'User-Agent': 'Mozilla/5.0'
+            }
+        });
         
         console.log('📡 Status da resposta:', response.status);
         
@@ -552,16 +549,10 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
         console.log('✅ Dados recebidos:', data);
 
         if (data.success && data.pixCopiaECola && data.pixQrCodeBase64) {
-            // Atualiza QR Code
-            document.getElementById('qrCodeImage').src = `data:image/png;base64,${data.pixQrCodeBase64}`;
+            document.getElementById('qrCodeImage').src = 'data:image/png;base64,' + data.pixQrCodeBase64;
             document.getElementById('pixCode').textContent = data.pixCopiaECola;
-            
-            // Salva código para copiar
             window.pixCode = data.pixCopiaECola;
-
-            // Abre modal
             document.getElementById('pixModal').classList.add('active');
-            
             console.log('🎉 Modal aberto com sucesso!');
         } else {
             throw new Error('Dados do PIX incompletos');
@@ -575,21 +566,19 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
     }
 });
 
-// Copiar código PIX
 document.getElementById('btnCopy').addEventListener('click', function() {
     const btn = this;
-    navigator.clipboard.writeText(window.pixCode).then(() => {
+    navigator.clipboard.writeText(window.pixCode).then(function() {
         btn.textContent = '✅ Código Copiado!';
         btn.classList.add('copied');
         
-        setTimeout(() => {
+        setTimeout(function() {
             btn.textContent = '📋 Copiar Código PIX';
             btn.classList.remove('copied');
         }, 3000);
     });
 });
 
-// Fechar modal ao clicar fora
 document.getElementById('pixModal').addEventListener('click', function(e) {
     if (e.target === this) {
         this.classList.remove('active');
