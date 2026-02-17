@@ -532,6 +532,13 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
         
         console.log('🚀 Fazendo requisição para:', webhookUrl);
 
+        const response = await fetch(webhookUrl, {
+        method: 'GET',
+        headers: {
+            'ngrok-skip-browser-warning': 'true',
+            'User-Agent': 'Mozilla/5.0'
+        }
+
         const response = await fetch(webhookUrl);
         
         console.log('📡 Status da resposta:', response.status);
