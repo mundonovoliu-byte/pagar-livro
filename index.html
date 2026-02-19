@@ -10,46 +10,44 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            overflow-x: hidden;
         }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes modalSlide { from { opacity: 0; transform: scale(0.9) translateY(-20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
         .container { background: #fff; border-radius: 24px; box-shadow: 0 30px 90px rgba(0,0,0,0.3); max-width: 480px; width: 100%; overflow: hidden; animation: slideUp 0.5s ease-out; }
         .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; }
-        .urgency-badge { display: inline-block; background: #FF6B6B; color: white; padding: 8px 20px; border-radius: 50px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px; animation: pulse 2s infinite; box-shadow: 0 4px 15px rgba(255,107,107,0.4); }
+        .urgency-badge { display: inline-block; background: #FF6B6B; color: white; padding: 8px 20px; border-radius: 50px; font-size: 13px; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; animation: pulse 2s infinite; box-shadow: 0 4px 15px rgba(255,107,107,0.4); }
         .header h1 { color: #fff; font-size: 28px; font-weight: 800; margin-bottom: 8px; line-height: 1.3; }
-        .header p { color: rgba(255,255,255,0.95); font-size: 15px; line-height: 1.5; }
+        .header p { color: rgba(255,255,255,0.95); font-size: 15px; }
         .benefits { background: #F8F9FF; padding: 25px 30px; border-left: 4px solid #667eea; }
-        .benefits h3 { color: #2D3748; font-size: 18px; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-        .benefits h3::before { content: "🎁"; font-size: 24px; }
+        .benefits h3 { color: #2D3748; font-size: 18px; font-weight: 700; margin-bottom: 15px; }
         .benefits ul { list-style: none; }
-        .benefits li { color: #4A5568; font-size: 15px; padding: 10px 0; padding-left: 30px; position: relative; line-height: 1.5; }
+        .benefits li { color: #4A5568; font-size: 15px; padding: 10px 0 10px 30px; position: relative; }
         .benefits li::before { content: "✓"; position: absolute; left: 0; color: #48BB78; font-weight: bold; font-size: 18px; }
         .social-proof { background: #fff; padding: 20px 30px; border-bottom: 1px solid #E2E8F0; }
         .social-proof-item { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #4A5568; }
-        .social-proof-item svg { flex-shrink: 0; }
         .trust-badge { display: inline-flex; align-items: center; gap: 8px; background: #F0FFF4; color: #22543D; padding: 8px 15px; border-radius: 8px; font-size: 13px; font-weight: 600; margin-top: 12px; }
         .form-section { padding: 30px; }
         .form-section h2 { color: #2D3748; font-size: 22px; font-weight: 700; margin-bottom: 8px; }
         .form-subtitle { color: #718096; font-size: 14px; margin-bottom: 25px; }
         .input-group { margin-bottom: 20px; }
         .input-group label { display: block; color: #4A5568; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
-        .input-group input { width: 100%; padding: 15px; border: 2px solid #E2E8F0; border-radius: 12px; font-size: 16px; transition: all 0.3s ease; font-family: inherit; }
+        .input-group input { width: 100%; padding: 15px; border: 2px solid #E2E8F0; border-radius: 12px; font-size: 16px; transition: all 0.3s; font-family: inherit; }
         .input-group input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 4px rgba(102,126,234,0.1); }
         .price-section { background: #FFF5E6; padding: 20px; border-radius: 12px; margin-bottom: 25px; text-align: center; }
         .price-old { color: #A0AEC0; font-size: 18px; text-decoration: line-through; margin-bottom: 5px; }
         .price-new { color: #2D3748; font-size: 42px; font-weight: 800; margin-bottom: 5px; }
         .price-tag { color: #D69E2E; font-size: 14px; font-weight: 600; }
-        .btn-submit { width: 100%; background: linear-gradient(135deg, #FF8C42 0%, #FF6B35 100%); color: white; border: none; padding: 18px; border-radius: 12px; font-size: 18px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 8px 25px rgba(255,107,53,0.3); }
+        .btn-submit { width: 100%; background: linear-gradient(135deg, #FF8C42 0%, #FF6B35 100%); color: white; border: none; padding: 18px; border-radius: 12px; font-size: 18px; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 8px 25px rgba(255,107,53,0.3); }
         .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 35px rgba(255,107,53,0.4); }
         .btn-submit:disabled { background: #CBD5E0; cursor: not-allowed; box-shadow: none; transform: none; }
         .guarantee { text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #E2E8F0; }
@@ -61,14 +59,14 @@
         .modal-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #48BB78 0%, #38A169 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 40px; }
         .modal h2 { color: #2D3748; font-size: 24px; font-weight: 800; margin-bottom: 10px; }
         .modal-subtitle { color: #718096; font-size: 15px; margin-bottom: 30px; }
-        .qrcode-container { background: #F7FAFC; padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 2px solid #E2E8F0; min-height: 80px; display: flex; align-items: center; justify-content: center; }
-        .qrcode-container img { max-width: 250px; width: 100%; height: auto; display: block; }
+        .qrcode-container { background: #F7FAFC; padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 2px solid #E2E8F0; }
+        .qrcode-container img { max-width: 250px; width: 100%; height: auto; }
         .pix-code { background: #2D3748; color: #F7FAFC; padding: 15px; border-radius: 12px; font-family: 'Courier New', monospace; font-size: 12px; word-break: break-all; margin-bottom: 15px; text-align: left; line-height: 1.5; }
-        .btn-copy { width: 100%; background: linear-gradient(135deg, #48BB78 0%, #38A169 100%); color: white; border: none; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 6px 20px rgba(72,187,120,0.3); }
-        .btn-copy:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(72,187,120,0.4); }
+        .btn-copy { width: 100%; background: linear-gradient(135deg, #48BB78 0%, #38A169 100%); color: white; border: none; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 6px 20px rgba(72,187,120,0.3); }
+        .btn-copy:hover { transform: translateY(-2px); }
         .btn-copy.copied { background: #4299E1; }
         .timer { color: #E53E3E; font-size: 14px; font-weight: 600; margin-top: 15px; }
-        .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #667eea; border-radius: 50%; width: 20px; height: 20px; animation: spin 0.8s linear infinite; display: inline-block; margin-right: 10px; }
+        .spinner { border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid #ffffff; border-radius: 50%; width: 20px; height: 20px; animation: spin 0.8s linear infinite; display: inline-block; margin-right: 10px; vertical-align: middle; }
         @media (max-width: 480px) { .header h1 { font-size: 24px; } .price-new { font-size: 36px; } .modal-content { padding: 30px 20px; } }
     </style>
 </head>
@@ -80,7 +78,7 @@
             <p>A história que você precisa conhecer</p>
         </div>
         <div class="benefits">
-            <h3>Você vai receber:</h3>
+            <h3>🎁 Você vai receber:</h3>
             <ul>
                 <li><strong>Volume 1</strong> – Versão Digital (PDF)</li>
                 <li><strong>Volume 2</strong> – Versão Digital (PDF)</li>
@@ -90,11 +88,7 @@
         </div>
         <div class="social-proof">
             <div class="social-proof-item">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 0L12.2451 6.90983H19.5106L13.6327 11.1803L15.8779 18.0902L10 13.8197L4.12215 18.0902L6.36729 11.1803L0.489435 6.90983H7.75486L10 0Z" fill="#F59E0B"/></svg>
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 0L12.2451 6.90983H19.5106L13.6327 11.1803L15.8779 18.0902L10 13.8197L4.12215 18.0902L6.36729 11.1803L0.489435 6.90983H7.75486L10 0Z" fill="#F59E0B"/></svg>
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 0L12.2451 6.90983H19.5106L13.6327 11.1803L15.8779 18.0902L10 13.8197L4.12215 18.0902L6.36729 11.1803L0.489435 6.90983H7.75486L10 0Z" fill="#F59E0B"/></svg>
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 0L12.2451 6.90983H19.5106L13.6327 11.1803L15.8779 18.0902L10 13.8197L4.12215 18.0902L6.36729 11.1803L0.489435 6.90983H7.75486L10 0Z" fill="#F59E0B"/></svg>
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 0L12.2451 6.90983H19.5106L13.6327 11.1803L15.8779 18.0902L10 13.8197L4.12215 18.0902L6.36729 11.1803L0.489435 6.90983H7.75486L10 0Z" fill="#F59E0B"/></svg>
+                ⭐⭐⭐⭐⭐
                 <span style="margin-left: 5px;"><strong>+2.847 pessoas</strong> já leram</span>
             </div>
             <div class="trust-badge">🔒 Pagamento 100% Seguro via PIX</div>
@@ -105,15 +99,15 @@
             <form id="checkoutForm">
                 <div class="input-group">
                     <label for="name">Nome completo</label>
-                    <input type="text" id="name" name="name" placeholder="Digite seu nome" required>
+                    <input type="text" id="name" placeholder="Digite seu nome" required>
                 </div>
                 <div class="input-group">
                     <label for="email">Seu melhor e-mail</label>
-                    <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                    <input type="email" id="email" placeholder="seu@email.com" required>
                 </div>
                 <div class="input-group">
                     <label for="cpf">CPF (para nota fiscal)</label>
-                    <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" maxlength="14" required>
+                    <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" required>
                 </div>
                 <div class="price-section">
                     <div class="price-old">De R$ 29,90</div>
@@ -163,46 +157,31 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
     btn.innerHTML = '<div class="spinner"></div> Processando...';
 
     const urlParams = new URLSearchParams(window.location.search);
-    const motorista = urlParams.get('motorista') || 'Cliente';
-    const nome = document.getElementById('name').value;
+    const motorista = urlParams.get('motorista') || 'DESCONHECIDO';
+    const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
 
+    const webhookUrl = `https://screamingly-uninclining-monnie.ngrok-free.dev/webhook/Pagar?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&cpf=${encodeURIComponent(cpf)}`;
+
     try {
-        const webhookUrl = `https://screamingly-uninclining-monnie.ngrok-free.dev/webhook/Pagar?motorista=${encodeURIComponent(motorista)}&nome=${encodeURIComponent(nome)}&email=${encodeURIComponent(email)}&tipo=venda`;
-
-        console.log('Requisição para:', webhookUrl);
-
         const response = await fetch(webhookUrl, {
             method: 'GET',
             headers: { 'ngrok-skip-browser-warning': 'true' }
         });
 
         const data = await response.json();
-        console.log('Resposta:', data);
 
-        // Mostra o código PIX (obrigatório)
-        if (data.pixCopiaECola) {
+        if (data.pixQrCodeBase64 && data.pixCopiaECola) {
+            document.getElementById('qrCodeImage').src = 'data:image/png;base64,' + data.pixQrCodeBase64;
             document.getElementById('pixCode').textContent = data.pixCopiaECola;
             window.pixCode = data.pixCopiaECola;
+            document.getElementById('pixModal').classList.add('active');
+        } else {
+            throw new Error('Dados do PIX incompletos na resposta');
         }
-
-        // ✅ CORREÇÃO: Mostra QR Code — base64 do backend OU gera via API
-        if (data.pixQrCodeBase64 && data.pixQrCodeBase64.length > 10) {
-            document.getElementById('qrCodeImage').src = 'data:image/png;base64,' + data.pixQrCodeBase64;
-        } else if (data.pixCopiaECola) {
-            document.getElementById('qrCodeImage').src =
-                `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(data.pixCopiaECola)}`;
-        }
-
-        // Abre o modal
-        document.getElementById('pixModal').classList.add('active');
-
-        btn.disabled = false;
-        btn.innerHTML = originalText;
 
     } catch (error) {
-        console.error('Erro:', error);
         alert('❌ Erro ao processar pagamento. Tente novamente.\n\n' + error.message);
         btn.disabled = false;
         btn.innerHTML = originalText;
