@@ -187,12 +187,12 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
             window.pixCode = data.pixCopiaECola;
         }
 
-        // Mostra o QR Code se vier o base64
+        // ✅ CORREÇÃO: Mostra QR Code — base64 do backend OU gera via API
         if (data.pixQrCodeBase64 && data.pixQrCodeBase64.length > 10) {
             document.getElementById('qrCodeImage').src = 'data:image/png;base64,' + data.pixQrCodeBase64;
-        } else {
-            // Se não vier o QR Code, esconde o container da imagem
-            document.querySelector('.qrcode-container').style.display = 'none';
+        } else if (data.pixCopiaECola) {
+            document.getElementById('qrCodeImage').src =
+                `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(data.pixCopiaECola)}`;
         }
 
         // Abre o modal
