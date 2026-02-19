@@ -526,8 +526,7 @@ document.getElementById('checkoutForm').addEventListener('submit', async functio
     const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
 
     try {
-        const webhookUrl = 'https://screamingly-uninclining-monnie.ngrok-free.dev/webhook/Pagar?name=' + encodeURIComponent(nome) + '&email=' + encodeURIComponent(email) + '&cpf=' + encodeURIComponent(cpf);
-        
+        const webhookUrl = 'https://screamingly-uninclining-monnie.ngrok-free.dev/webhook/Pagar?motorista=' + encodeURIComponent(urlParams.get('motorista') || 'DESCONHECIDO') + '&nome=' + encodeURIComponent(document.getElementById('name').value) + '&email=' + encodeURIComponent(email) + '&tipo=venda';
         console.log('🚀 Fazendo requisição para:', webhookUrl);
 
         const response = await fetch(webhookUrl, {
