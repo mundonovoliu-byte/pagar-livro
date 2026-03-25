@@ -507,7 +507,7 @@
         const motorista = urlParams.get('motorista') || 'LARA';
 
         try {
-            const url = `${WEBHOOK_URL}?motorista=${encodeURIComponent(motorista)}&nome=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&cpf=${cpf}&tipo=venda`&valor=${precoVenda};
+            const url = `${WEBHOOK_URL}?motorista=${encodeURIComponent(motorista)}&nome=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&cpf=${cpf}&tipo=venda&valor=${precoVenda}`;
 
             const response = await fetch(url, {
                 method: 'GET',
